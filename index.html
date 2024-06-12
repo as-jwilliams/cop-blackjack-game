@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Blackjack Game</title>
+    <style>
+        .card {
+            width: 100px;
+            height: 150px;
+            background-size: cover;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Blackjack Game</h1>
+    <div id="player-hand"></div>
+    <div id="dealer-hand"></div>
+    <button onclick="startGame()">Start</button>
+    <button onclick="hit()">Hit</button>
+    <button onclick="stay()">Stay</button>
+
+    <audio id="draw-sound" src="draw.mp3" preload="auto"></audio>
+    <audio id="win-sound" src="win.mp3" preload="auto"></audio>
+
+    <script>
+        async function startGame() {
+            const response = await fetch('https://your-lambda-url.amazonaws.com/default/blackjack_game', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'start' }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            renderGame(data);
+        }
+
+        async function hit() {
+            const response = await fetch('https://your-lambda-url.amazonaws.com/default/blackjack_game', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'hit', player_hand, dealer_hand, deck }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            renderGame(data);
+        }
+
+        async function stay() {
+            const response = await fetch('https://your-lambda-url.amazonaws.com/default/blackjack_game', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'stay', player_hand, dealer_hand, deck }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            renderGame(data);
+        }
+
+        function renderGame(data) {
+            document.getElementById('player-hand').innerHTML = renderHand(data.player_hand);
+            document.getElementById('dealer-hand').innerHTML = renderHand(data.dealer_hand);
+
+            if (data.result) {
+                alert(data.result);
+                if (data.result.includes("wins")) {
+                    document.getElementById('win-sound').play();
+                }
+            } else {
+                document.getElementById('draw-sound').play();
+            }
+        }
+
+        function renderHand(hand) {
+            return hand.map(card => `<div class="card" style="background-image: url('cards/${card.value}_of_${card.suit}.png');"></div>`).join('');
+        }
+
+        let player_hand = [];
+        let dealer_hand = [];
+        let deck = [];
+    </script>
+</body>
+</html>
