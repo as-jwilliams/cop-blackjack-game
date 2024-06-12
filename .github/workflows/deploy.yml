@@ -51,7 +51,7 @@ jobs:
 
       - name: Import Existing IAM Role
         run: |
-          terraform import aws_iam_role.lambda_exec arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/lambda_exec_role || true
+          terraform import aws_iam_role.lambda_exec arn:aws:iam::905418230836:role/lambda_exec_role || true
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
