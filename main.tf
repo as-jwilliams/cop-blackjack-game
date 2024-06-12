@@ -52,4 +52,5 @@ resource "aws_lambda_function" "blackjack_game" {
   role             = data.aws_iam_role.existing_lambda_exec.arn
   handler          = "blackjack.handler"
   runtime          = "python3.8"
+  source_code_hash = filebase64sha256("blackjack_game.zip")
 }
