@@ -21,6 +21,11 @@ resource "aws_cloudfront_distribution" "cdn" {
     target_origin_id = "S3-blackjack-game-site"
     viewer_protocol_policy = "redirect-to-https"
   }
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
   viewer_certificate {
     cloudfront_default_certificate = true
   }
