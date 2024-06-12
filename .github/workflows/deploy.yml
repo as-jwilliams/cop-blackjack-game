@@ -28,19 +28,22 @@ jobs:
 
       - name: Debug AWS CLI
         run: |
+          set -x
           echo "AWS CLI Version:"
           aws --version
           echo "Caller Identity:"
-          aws sts get-caller-identity
+          aws sts get-caller-identity || echo "Failed to get caller identity"
           echo "Listing S3 Buckets:"
-          aws s3 ls
+          aws s3 ls || echo "Failed to list S3 buckets"
           echo "Creating S3 Bucket:"
-          aws s3 mb s3://blackjack-game-site || true
+          aws s3 mb s3://blackjack-game-site || echo "Failed to create S3 bucket or it already exists"
           echo "Uploading to S3:"
-          aws s3 cp blackjack_game.zip s3://blackjack-game-site/
+          aws s3 cp blackjack_game.zip s3://blackjack-game-site/ || echo "Failed to upload to S3"
+          set +x
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: us-east-1
 
       - name: Apply Terraform
         env:
