@@ -51,13 +51,16 @@ jobs:
 
       - name: Import Existing Lambda Function
         run: |
-          terraform import aws_lambda_function.blackjack_game arn:aws:lambda:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:function:blackjack_game || true
+          echo "Importing existing Lambda function..."
+          terraform import aws_lambda_function.blackjack_game arn:aws:lambda:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:function:blackjack_game
+          terraform plan
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
 
       - name: Apply Terraform
+        if: success()  # Only run if the import step succeeds
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
