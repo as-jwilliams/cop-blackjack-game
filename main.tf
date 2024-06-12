@@ -7,6 +7,12 @@ resource "aws_s3_bucket" "static_site" {
   website {
     index_document = "index.html"
   }
+  lifecycle {
+    prevent_destroy = true
+  }
+  tags = {
+    Name = "blackjack-game-site"
+  }
 }
 
 resource "aws_cloudfront_distribution" "cdn" {
@@ -67,6 +73,15 @@ resource "aws_iam_role" "lambda_exec" {
           ],
           Effect   = "Allow",
           Resource = "arn:aws:logs:*:*:*"
+        },
+        {
+          Action: [
+            "s3:GetObject",
+            "s3:PutObject",
+            "s3:ListBucket"
+          ],
+          Effect: "Allow",
+          Resource: "*"
         }
       ]
     })
