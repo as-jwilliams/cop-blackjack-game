@@ -26,6 +26,10 @@ jobs:
       - name: Zip Lambda function
         run: zip -r blackjack_game.zip .
 
+      - name: Create S3 bucket if it doesn't exist
+        run: |
+          aws s3 mb s3://blackjack-game-site || true
+
       - name: Upload to S3
         run: |
           aws s3 cp blackjack_game.zip s3://blackjack-game-site/
